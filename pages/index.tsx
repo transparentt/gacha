@@ -85,9 +85,10 @@ type Inputs = {
 };
 
 export default function Home() {
-  const [sumPrice, setSumPrice] = useState(0);
+  const [sumPriceOutput, setSumPriceOutput] = useState(0);
   const [chargeOutput, setChargeOutput] = useState(0);
-  const [resultMenuNames, setResultMenuNames] = useState<string[]>();
+  const [resultMenuNamesOutput, setResultMenuNamesOutput] =
+    useState<string[]>();
 
   const {
     register,
@@ -140,8 +141,8 @@ export default function Home() {
       }
     }
 
-    setSumPrice(sumPrice);
-    setResultMenuNames(resultMenuNames);
+    setSumPriceOutput(sumPrice);
+    setResultMenuNamesOutput(resultMenuNames);
   };
 
   return (
@@ -190,7 +191,9 @@ export default function Home() {
             </form>
           </div>
           <div>
-            <h4>{sumPrice + charge > charge ? "結果" : ""}</h4>
+            <h4>
+              {sumPriceOutput + chargeOutput > chargeOutput ? "結果" : ""}
+            </h4>
             <TableContainer component={Paper}>
               <Table sx={{ minWidth: 350 }} aria-label="simple table">
                 <TableHead>
@@ -204,18 +207,18 @@ export default function Home() {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {resultMenuNames
-                    ? resultMenuNames.map((menuName) => (
+                  {resultMenuNamesOutput
+                    ? resultMenuNamesOutput.map((name, index) => (
                         <TableRow
-                          key={menuName}
+                          key={name + String(index)}
                           sx={{
                             "&:last-child td, &:last-child th": { border: 0 },
                           }}
                         >
                           <TableCell component="th" scope="row">
-                            {menuName}
+                            {name}
                           </TableCell>
-                          <TableCell align="right">{menu[menuName]}</TableCell>
+                          <TableCell align="right">{menu[name]}</TableCell>
                         </TableRow>
                       ))
                     : ""}
@@ -223,11 +226,11 @@ export default function Home() {
               </Table>
             </TableContainer>
             <h4>
-              {sumPrice + chargeOutput > chargeOutput ? "合計: " : ""}
-              {sumPrice + chargeOutput > chargeOutput
-                ? sumPrice + chargeOutput
+              {sumPriceOutput + chargeOutput > chargeOutput ? "合計: " : ""}
+              {sumPriceOutput + chargeOutput > chargeOutput
+                ? sumPriceOutput + chargeOutput
                 : ""}
-              {sumPrice + chargeOutput > chargeOutput ? "円" : ""}
+              {sumPriceOutput + chargeOutput > chargeOutput ? "円" : ""}
             </h4>
           </div>
           <div>
