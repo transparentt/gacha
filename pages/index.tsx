@@ -63,7 +63,7 @@ const menu: { [name: string]: number } = {
   緑茶: 440,
 };
 
-const charge = 750;
+const charge = Math.round(750 * 1.1);
 const budget = 3000;
 
 export default function Home({
