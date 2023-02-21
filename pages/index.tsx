@@ -144,13 +144,13 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>Charlotteガチャ</title>
+        <title>Charlotte ガチャ</title>
         <meta name="description" content="Charlotte 3000円ガチャ" />
         <meta name="viewport" content="initial-scale=1, width=device-width" />
       </Head>
       <Container maxWidth="sm">
         <main>
-          <h1>Charlotteガチャ</h1>
+          <h2>Charlotte ガチャ</h2>
 
           <div>
             <form onSubmit={handleSubmit(onSubmit)}>
@@ -224,6 +224,11 @@ export default function Home() {
               {sumPrice + charge > charge ? sumPrice + charge : ""}
               {sumPrice + charge > charge ? "円" : ""}
             </h4>
+          </div>
+          <div>
+            <p>
+              ※非公式ファンサイトであり、当サイトにおいて生じた損害については、その理由を問わず、当サイトは、一切損害賠償責任を負いません。
+            </p>
           </div>
         </main>
       </Container>
