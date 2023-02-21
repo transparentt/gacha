@@ -1,7 +1,6 @@
 import Head from "next/head";
-import Image from "next/image";
-import { Inter } from "@next/font/google";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useForm, SubmitHandler } from "react-hook-form";
 
 const menu: { [name: string]: number } = {
   メイドのオリジナルカクテル: 880,
@@ -66,13 +65,68 @@ const menu: { [name: string]: number } = {
 const charge = Math.round(750 * 1.1);
 const budget = 3000;
 
-export default function Home({
-  sumPrice,
-  resultMenuNames,
-}: {
-  sumPrice: number;
-  resultMenuNames: string[];
-}) {
+type Inputs = {
+  stayTime: string;
+  budget: string;
+};
+
+export default function Home() {
+  const [sumPrice, setSumPrice] = useState(0);
+  const [resultMenuNames, setResultMenuNames] = useState<string[]>();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<Inputs>();
+
+  const onSubmit: SubmitHandler<Inputs> = (data) => {
+    let menuNames: string[] = [];
+    Object.keys(menu).forEach((key) => {
+      menuNames.push(key);
+    });
+
+    let charge: number;
+    if (Number(data.stayTime) > 60) {
+      const chargeCount = Math.floor((Number(data.stayTime) - 60) / 30);
+      charge = (500 + 250 * chargeCount) * 1.1;
+    } else {
+      charge = 500 * 1.1;
+    }
+
+    let sumPrice = 0;
+    let resultMenuNames: string[] = [];
+
+    while (true) {
+      let candidateMenuNames: string[] = [];
+
+      for (const candidateName of menuNames) {
+        const candidatePrice = menu[candidateName];
+        if (Number(data.budget) - charge > sumPrice + candidatePrice) {
+          candidateMenuNames.push(candidateName);
+        }
+      }
+
+      if (candidateMenuNames.length > 0) {
+        let menuName =
+          candidateMenuNames[
+            Math.floor(Math.random() * candidateMenuNames.length)
+          ];
+        const price = menu[menuName];
+
+        if (Number(data.budget) - charge > sumPrice + price) {
+          sumPrice += price;
+          resultMenuNames.push(menuName);
+        }
+      } else {
+        break;
+      }
+    }
+
+    setSumPrice(sumPrice);
+    setResultMenuNames(resultMenuNames);
+  };
+
   return (
     <>
       <Head>
@@ -81,23 +135,51 @@ export default function Home({
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
       <main>
-        <h2>Charlotte ガチャ</h2>
+        <h1>Charlotte ガチャ</h1>
 
-        <ul>
-          <h4>設定</h4>
-          <li>{"チャージ料金: " + charge + "円"}</li>
-          <li>{"予算: " + budget + "円"}</li>
-        </ul>
+        <div>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <div>
+              <label>ご滞在時間(分)</label>
+              <input
+                defaultValue="90"
+                {...register("stayTime", { required: true })}
+              />
+              {errors.stayTime && <span>必須</span>}
+            </div>
+            <div>
+              <label>ご予算</label>
+              <input
+                defaultValue="3000"
+                {...register("budget", { required: true })}
+              />
+              {errors.budget && <span>必須</span>}
+            </div>
 
-        <ul>
-          <h4>ガチャ結果</h4>
-          {resultMenuNames.map((menuName) => {
-            return (
-              <li key={menuName}>{menuName + ": " + menu[menuName] + "円"}</li>
-            );
-          })}
-          <h5>合計: {sumPrice + charge}円</h5>
-        </ul>
+            <div>
+              <button type="submit">ガチャを回す</button>
+            </div>
+          </form>
+        </div>
+        <div>
+          <h3>{sumPrice + charge > charge ? "結果" : ""}</h3>
+          <ul>
+            {resultMenuNames
+              ? resultMenuNames.map((menuName) => {
+                  return (
+                    <li key={menuName}>
+                      {menuName + ": " + menu[menuName] + "円"}
+                    </li>
+                  );
+                })
+              : ""}
+          </ul>
+          <h3>
+            {sumPrice + charge > charge ? "合計: " : ""}
+            {sumPrice + charge > charge ? sumPrice + charge : ""}
+            {sumPrice + charge > charge ? "円" : ""}
+          </h3>
+        </div>
       </main>
     </>
   );
@@ -113,7 +195,6 @@ export async function getServerSideProps() {
   let sumPrice = 0;
   let resultMenuNames: string[] = [];
 
-  console.log("############");
   while (true) {
     let candidateMenuNames: string[] = [];
 
@@ -130,8 +211,6 @@ export async function getServerSideProps() {
           Math.floor(Math.random() * candidateMenuNames.length)
         ];
       const price = menu[menuName];
-
-      console.log(menuName, price);
 
       if (budget - charge > sumPrice + price) {
         sumPrice += price;
