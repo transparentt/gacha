@@ -86,6 +86,7 @@ type Inputs = {
 
 export default function Home() {
   const [sumPrice, setSumPrice] = useState(0);
+  const [chargeOutput, setChargeOutput] = useState(0);
   const [resultMenuNames, setResultMenuNames] = useState<string[]>();
 
   const {
@@ -107,6 +108,8 @@ export default function Home() {
     } else {
       charge = 500 * 1.1;
     }
+
+    setChargeOutput(charge);
 
     let sumPrice = 0;
     let resultMenuNames: string[] = [];
@@ -220,9 +223,11 @@ export default function Home() {
               </Table>
             </TableContainer>
             <h4>
-              {sumPrice + charge > charge ? "合計: " : ""}
-              {sumPrice + charge > charge ? sumPrice + charge : ""}
-              {sumPrice + charge > charge ? "円" : ""}
+              {sumPrice + chargeOutput > chargeOutput ? "合計: " : ""}
+              {sumPrice + chargeOutput > chargeOutput
+                ? sumPrice + chargeOutput
+                : ""}
+              {sumPrice + chargeOutput > chargeOutput ? "円" : ""}
             </h4>
           </div>
           <div>
@@ -234,43 +239,4 @@ export default function Home() {
       </Container>
     </>
   );
-}
-
-// This gets called on every request
-export async function getServerSideProps() {
-  let menuNames: string[] = [];
-  Object.keys(menu).forEach((key) => {
-    menuNames.push(key);
-  });
-
-  let sumPrice = 0;
-  let resultMenuNames: string[] = [];
-
-  while (true) {
-    let candidateMenuNames: string[] = [];
-
-    for (const candidateName of menuNames) {
-      const candidatePrice = menu[candidateName];
-      if (budget - charge > sumPrice + candidatePrice) {
-        candidateMenuNames.push(candidateName);
-      }
-    }
-
-    if (candidateMenuNames.length > 0) {
-      let menuName =
-        candidateMenuNames[
-          Math.floor(Math.random() * candidateMenuNames.length)
-        ];
-      const price = menu[menuName];
-
-      if (budget - charge > sumPrice + price) {
-        sumPrice += price;
-        resultMenuNames.push(menuName);
-      }
-    } else {
-      break;
-    }
-  }
-  // Pass data to the page via props
-  return { props: { sumPrice, resultMenuNames } };
 }
