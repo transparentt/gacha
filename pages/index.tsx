@@ -1,6 +1,20 @@
 import Head from "next/head";
 import { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
+import Container from "@mui/material/Container";
+import "@fontsource/roboto/300.css";
+import "@fontsource/roboto/400.css";
+import "@fontsource/roboto/500.css";
+import "@fontsource/roboto/700.css";
 
 const menu: { [name: string]: number } = {
   メイドのオリジナルカクテル: 880,
@@ -130,57 +144,89 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>Charlotte ガチャ</title>
-        <meta name="description" content="harlotte 3000円ガチャ" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Charlotteガチャ</title>
+        <meta name="description" content="Charlotte 3000円ガチャ" />
+        <meta name="viewport" content="initial-scale=1, width=device-width" />
       </Head>
-      <main>
-        <h1>Charlotte ガチャ</h1>
+      <Container maxWidth="sm">
+        <main>
+          <h1>Charlotteガチャ</h1>
 
-        <div>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <div>
-              <label>ご滞在時間(分)</label>
-              <input
-                defaultValue="90"
-                {...register("stayTime", { required: true })}
-              />
-              {errors.stayTime && <span>必須</span>}
-            </div>
-            <div>
-              <label>ご予算</label>
-              <input
-                defaultValue="3000"
-                {...register("budget", { required: true })}
-              />
-              {errors.budget && <span>必須</span>}
-            </div>
+          <div>
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <div>
+                <TextField
+                  required
+                  label="ご滞在時間(分)"
+                  id="outlined-basic"
+                  variant="outlined"
+                  defaultValue="90"
+                  margin="normal"
+                  {...register("stayTime", { required: true })}
+                />
+                {errors.stayTime && <span>必須</span>}
+              </div>
+              <div>
+                <TextField
+                  required
+                  label="ご予算"
+                  id="outlined-basic"
+                  variant="outlined"
+                  defaultValue="3000"
+                  margin="normal"
+                  {...register("budget", { required: true })}
+                />
+                {errors.budget && <span>必須</span>}
+              </div>
 
-            <div>
-              <button type="submit">ガチャを回す</button>
-            </div>
-          </form>
-        </div>
-        <div>
-          <h3>{sumPrice + charge > charge ? "結果" : ""}</h3>
-          <ul>
-            {resultMenuNames
-              ? resultMenuNames.map((menuName) => {
-                  return (
-                    <li key={menuName}>
-                      {menuName + ": " + menu[menuName] + "円"}
-                    </li>
-                  );
-                })
-              : ""}
-          </ul>
-          <h3>
-            {sumPrice + charge > charge ? "合計: " : ""}
-            {sumPrice + charge > charge ? sumPrice + charge : ""}
-            {sumPrice + charge > charge ? "円" : ""}
-          </h3>
-        </div>
-      </main>
+              <div>
+                <Button variant="contained" type="submit">
+                  ガチャを回す
+                </Button>
+              </div>
+            </form>
+          </div>
+          <div>
+            <h4>{sumPrice + charge > charge ? "結果" : ""}</h4>
+            <TableContainer component={Paper}>
+              <Table sx={{ minWidth: 350 }} aria-label="simple table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>
+                      <b>メニュー</b>
+                    </TableCell>
+                    <TableCell align="right">
+                      <b>価格(税込)</b>
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {resultMenuNames
+                    ? resultMenuNames.map((menuName) => (
+                        <TableRow
+                          key={menuName}
+                          sx={{
+                            "&:last-child td, &:last-child th": { border: 0 },
+                          }}
+                        >
+                          <TableCell component="th" scope="row">
+                            {menuName}
+                          </TableCell>
+                          <TableCell align="right">{menu[menuName]}</TableCell>
+                        </TableRow>
+                      ))
+                    : ""}
+                </TableBody>
+              </Table>
+            </TableContainer>
+            <h4>
+              {sumPrice + charge > charge ? "合計: " : ""}
+              {sumPrice + charge > charge ? sumPrice + charge : ""}
+              {sumPrice + charge > charge ? "円" : ""}
+            </h4>
+          </div>
+        </main>
+      </Container>
     </>
   );
 }
