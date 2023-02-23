@@ -2,6 +2,7 @@ import Head from "next/head";
 import { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import Button from "@mui/material/Button";
+import Checkbox from "@mui/material/Checkbox";
 import TextField from "@mui/material/TextField";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -82,6 +83,8 @@ const budget = 3000;
 type Inputs = {
   stayTime: string;
   budget: string;
+  mustOriginalCocktail: boolean;
+  mustKimagureGohan: boolean;
 };
 
 export default function Home() {
@@ -114,6 +117,16 @@ export default function Home() {
 
     let sumPrice = 0;
     let resultMenuNames: string[] = [];
+
+    if (data.mustOriginalCocktail) {
+      sumPrice += menu["メイドのオリジナルカクテル"];
+      resultMenuNames.push("メイドのオリジナルカクテル");
+    }
+
+    if (data.mustKimagureGohan) {
+      sumPrice += menu["メイドのきまぐれごはん"];
+      resultMenuNames.push("メイドのきまぐれごはん");
+    }
 
     while (true) {
       let candidateMenuNames: string[] = [];
@@ -181,6 +194,23 @@ export default function Home() {
                   {...register("budget", { required: true })}
                 />
                 {errors.budget && <span>必須</span>}
+              </div>
+
+              <div>
+                <Checkbox
+                  defaultChecked
+                  size="small"
+                  {...register("mustOriginalCocktail")}
+                />{" "}
+                <label>メイドのオリジナルカクテルを含む</label>
+              </div>
+              <div>
+                <Checkbox
+                  defaultChecked
+                  size="small"
+                  {...register("mustKimagureGohan")}
+                />{" "}
+                <label>メイドのきまぐれごはんを含む</label>
               </div>
 
               <div>
