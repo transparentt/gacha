@@ -12,6 +12,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import Container from "@mui/material/Container";
+import TwitterIcon from "@mui/icons-material/Twitter";
 import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
@@ -158,6 +159,8 @@ export default function Home() {
     setResultMenuNamesOutput(resultMenuNames);
   };
 
+  const tweetText = resultMenuNamesOutput ? resultMenuNamesOutput.join() : "";
+
   return (
     <>
       <Head>
@@ -254,6 +257,19 @@ export default function Home() {
                 : ""}
               {sumPriceOutput + chargeOutput > chargeOutput ? "円" : ""}
             </h4>
+          </div>
+          <div>
+            <a
+              href={
+                "https://twitter.com/intent/tweet?text=" +
+                "【ガチャ結果】" +
+                tweetText +
+                "&hashtags=Charlotteガチャ" +
+                "&url=https://gacha-charlotte.vercel.app/"
+              }
+            >
+              <TwitterIcon color="primary"></TwitterIcon>
+            </a>
           </div>
           <div>
             <p>
