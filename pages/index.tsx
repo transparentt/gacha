@@ -197,19 +197,11 @@ export default function Home() {
               </div>
 
               <div>
-                <Checkbox
-                  defaultChecked
-                  size="small"
-                  {...register("mustOriginalCocktail")}
-                />{" "}
+                <Checkbox size="small" {...register("mustOriginalCocktail")} />{" "}
                 <label>メイドのオリジナルカクテルを含む</label>
               </div>
               <div>
-                <Checkbox
-                  defaultChecked
-                  size="small"
-                  {...register("mustKimagureGohan")}
-                />{" "}
+                <Checkbox size="small" {...register("mustKimagureGohan")} />{" "}
                 <label>メイドのきまぐれごはんを含む</label>
               </div>
 
