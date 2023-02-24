@@ -86,6 +86,7 @@ type Inputs = {
   budget: string;
   mustOriginalCocktail: boolean;
   mustKimagureGohan: boolean;
+  female: boolean;
 };
 
 export default function Home() {
@@ -108,10 +109,19 @@ export default function Home() {
 
     let charge: number;
     if (Number(data.stayTime) > 60) {
-      const chargeCount = Math.floor((Number(data.stayTime) - 60) / 30);
-      charge = (500 + 250 * chargeCount) * 1.1;
+      if (data.female) {
+        const chargeCount = Math.floor((Number(data.stayTime) - 60) / 30);
+        charge = (500 + 250 * chargeCount - 500) * 1.1;
+      } else {
+        const chargeCount = Math.floor((Number(data.stayTime) - 60) / 30);
+        charge = (500 + 250 * chargeCount) * 1.1;
+      }
     } else {
-      charge = 500 * 1.1;
+      if (data.female) {
+        charge = 0;
+      } else {
+        charge = 500 * 1.1;
+      }
     }
 
     setChargeOutput(charge);
@@ -119,12 +129,18 @@ export default function Home() {
     let sumPrice = 0;
     let resultMenuNames: string[] = [];
 
-    if (data.mustOriginalCocktail) {
+    if (
+      data.mustOriginalCocktail &&
+      Number(data.budget) > menu["メイドのオリジナルカクテル"]
+    ) {
       sumPrice += menu["メイドのオリジナルカクテル"];
       resultMenuNames.push("メイドのオリジナルカクテル");
     }
 
-    if (data.mustKimagureGohan) {
+    if (
+      data.mustKimagureGohan &&
+      Number(data.budget) > menu["メイドのきまぐれごはん"]
+    ) {
       sumPrice += menu["メイドのきまぐれごはん"];
       resultMenuNames.push("メイドのきまぐれごはん");
     }
@@ -199,6 +215,10 @@ export default function Home() {
                 {errors.budget && <span>必須</span>}
               </div>
 
+              <div>
+                <Checkbox size="small" {...register("female")} />{" "}
+                <label>お嬢様方</label>
+              </div>
               <div>
                 <Checkbox size="small" {...register("mustOriginalCocktail")} />{" "}
                 <label>メイドのオリジナルカクテルを含む</label>
